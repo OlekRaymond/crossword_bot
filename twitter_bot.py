@@ -1,5 +1,4 @@
 import pickle
-import os
 from collections import namedtuple, defaultdict
 from random import choice
 import requests
@@ -100,3 +99,7 @@ def main():
 
     api = Twython(**credentials)
     api.update_status(status=tweet)
+
+
+if __name__ == '__main__':
+    main()
