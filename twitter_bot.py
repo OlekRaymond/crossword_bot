@@ -28,7 +28,27 @@ def get_crossword_id():
     url = 'https://www.theguardian.com/crosswords/series/cryptic'
     p = requests.get(url)
     soup = BeautifulSoup(p.content, 'html.parser')
-    return int(soup.find(class_='fc-item')['data-id'].split('/')[-1])
+
+    a = soup.find(class_='dcr-yyvovz')
+    assert a is not None
+    for _ in range(3):
+        a = next(iter(a))
+        assert a is not None
+    assert a is not None
+    assert not isinstance(a, str)
+    all_as = a.find_all('a')
+    for a in all_as:
+        if a is None or isinstance(a, str):
+            continue
+        try:
+            label = a.attrs.get("aria-label", None)
+        except: continue
+        if label is None or not isinstance(label, str):
+            continue
+        if label.startswith("Cryptic crossword No "):
+            return int(label.replace("Cryptic crossword No ", "").replace(",", ""))
+    raise Exception("Could not find latest crossword id 😢")
+
 
 
 def scrape_clues(crossword_id):
